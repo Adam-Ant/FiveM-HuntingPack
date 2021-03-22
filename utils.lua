@@ -64,7 +64,6 @@ function spawnVehicle(model, x, y, z, heading)
 					loop = loop + 1
 				until closest ~= 0 or loop == 100
 			end
-			print(offset)
 			coords = GetOffsetFromEntityInWorldCoords(closest, math.abs(dimensions.x) + spawnOffset, 0, 0)
 			spawnOffset = spawnOffset + 1
 			Citizen.Wait(0)

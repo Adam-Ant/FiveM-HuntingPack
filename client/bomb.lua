@@ -5,8 +5,6 @@ bombMessages = {
 }
 
 function bombActive(speedLimit, allowedSeconds)
-	print(speedLimit)
-	print(allowedSeconds)
 	isArmed = false
 	limit = speedLimit
 	secondsBelow = 0

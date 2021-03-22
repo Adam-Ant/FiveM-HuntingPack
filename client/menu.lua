@@ -65,6 +65,7 @@ AddEventHandler('huntingpack:showMenu', function()
 
 	bombSpeed = 25
 	bombTime = 10
+	powerMultiplier = 1
 
 	while not isActive do
 		if WarMenu.Begin('main') then
@@ -129,11 +130,15 @@ AddEventHandler('huntingpack:showMenu', function()
 				if runnerVehicleComboBoxIndex == #runnerVehicleComboBoxItems then
 					runnerVehicle = ""
 				else
-					runnerVehicle = runnerVehicles[runnerVehicleComboBoxItems[runnerVehicleComboBoxIndex]].model
-					bombSpeed = runnerVehicles[runnerVehicleComboBoxItems[runnerVehicleComboBoxIndex]].speed
-					bombTime = runnerVehicles[runnerVehicleComboBoxItems[runnerVehicleComboBoxIndex]].time
-					print(bombSpeed)
-					print(bombTime)
+					selectedVehicle = runnerVehicles[runnerVehicleComboBoxItems[runnerVehicleComboBoxIndex]]
+					runnerVehicle = selectedVehicle.model
+					bombSpeed = selectedVehicle.speed
+					bombTime = selectedVehicle.time
+					if selectedVehicle.power then
+						powerMultiplier = selectedVehicle.power
+					else
+						powerMultiplier = 1
+					end
 				end
 			end
 
@@ -144,8 +149,6 @@ AddEventHandler('huntingpack:showMenu', function()
 					if runnerCustomText then
 						-- TODO: Check this to be a valid model
 						runnerVehicle = runnerCustomText
-						bombSpeed = 30
-						bombTime = 10
 					end
 				end		
 			end
@@ -167,9 +170,7 @@ AddEventHandler('huntingpack:showMenu', function()
 			WarMenu.MenuButton('No', 'main')
 
 			if WarMenu.Button('~r~Yes') then
-				print(bombSpeed)
-				print(bombTime)
-				TriggerServerEvent('gameStart', attackVehicle, defendVehicle, runnerVehicle, selectedMap, bombSpeed, bombTime)
+				TriggerServerEvent('gameStart', attackVehicle, defendVehicle, runnerVehicle, selectedMap, bombSpeed, bombTime, powerMultiplier)
 				WarMenu.CloseMenu()
 			end
 

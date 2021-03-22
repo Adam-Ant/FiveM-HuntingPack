@@ -24,10 +24,11 @@ AddEventHandler('onClientGameTypeStart', function()
     end)
 
     exports.spawnmanager:setAutoSpawn(true)
+	exports.spawnmanager:forceRespawn()
 end)
 
 RegisterNetEvent('cl_gameStart')
-AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvRunnerVehicle, course, bombSpeed, bombTime )
+AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvRunnerVehicle, course, bombSpeed, bombTime, powerMultiplier )
 	courseData = courses[course]
 	if team == "defense" then
 		vehicleModel = srvDefendVehicle
@@ -60,6 +61,7 @@ AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvR
 
 	-- BEEP BEEP MOTHERFUCKAAA
 	if team == "runner" then
+		ModifyVehicleTopSpeed(vehicle.VehicleId, powerMultiplier)
 		Citizen.CreateThread(function()
 			bombActive(bombSpeed, bombTime)
 		end)
@@ -69,7 +71,7 @@ AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvR
 		end)
 	end
 
-	--DoScreenFadeIn(500)
+	DoScreenFadeIn(500)
 end)
 
 RegisterNetEvent('cl_gameFinish')

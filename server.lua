@@ -1,7 +1,7 @@
 RegisterNetEvent('gameStart')
-AddEventHandler('gameStart', function(attackVehicle, defenseVehicle, runnerVehicle, map, bombSpeed, bombTime)
+AddEventHandler('gameStart', function(attackVehicle, defenseVehicle, runnerVehicle, map, bombSpeed, bombTime, powerMultiplier)
  	for _, playerId in ipairs(GetPlayers()) do
-		TriggerClientEvent('cl_gameStart', playerId, attackVehicle, defenseVehicle, runnerVehicle, map, bombSpeed, bombTime)
+		TriggerClientEvent('cl_gameStart', playerId, attackVehicle, defenseVehicle, runnerVehicle, map, bombSpeed, bombTime, powerMultiplier)
 		Citizen.Wait(500)
 	end
 	

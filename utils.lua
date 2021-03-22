@@ -15,6 +15,13 @@ function getVehicleInDirection(coordFrom)
 	return vehicle
 end
 
+function addMissionBlip(x, y, z)
+	local blipId = 0
+	blipId = AddBlipForCoord(x, y, z)
+	SetBlipRoute(blipId, true)
+	return blipId
+end
+
 function displaySplashText(message)
 	alpha = 255
 	displayText = true

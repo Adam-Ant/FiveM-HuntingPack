@@ -6,6 +6,7 @@ finishMessages = {
 
 team = "attack"
 isActive = false
+blipId = 0
 attackVehicle = "adder"
 defendVehicle = "adder"
 runnerVehicle = "bus"
@@ -23,7 +24,6 @@ AddEventHandler('onClientGameTypeStart', function()
     end)
 
     exports.spawnmanager:setAutoSpawn(true)
-    exports.spawnmanager:forceRespawn()
 end)
 
 RegisterNetEvent('cl_gameStart')
@@ -37,24 +37,27 @@ AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvR
 		vehicleModel = srvRunnerVehicle
 	end
 
-	print(team)
+    local coords = courseData.spawns[team]
 
-	print(json.encode(courseData))
-        local coords = courseData.spawns[team]
-	print(coords)
-
-	--DoScreenFadeOut(250)
+	DoScreenFadeOut(250)
 
 	SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 2, false, false, false, false)
 
-        vehicle = spawnVehicle(vehicleModel, coords.x, coords.y, coords.z, coords.w)
-        SetPedIntoVehicle(GetPlayerPed(-1), vehicle.VehicleId, -1)
+    vehicle = spawnVehicle(vehicleModel, coords.x, coords.y, coords.z, coords.w)
+    SetPedIntoVehicle(GetPlayerPed(-1), vehicle.VehicleId, -1)
 	isActive = true
 
 	Citizen.CreateThread(function()
 		drawMarker(courseData.goal)
 	end)
-	
+
+	-- Create blip
+	if courseData.goalBlip == nil then
+		courseData.goalBlip = courseData.goal
+	end
+
+	blipId = addMissionBlip(courseData.goalBlip.x, courseData.goalBlip.y, courseData.goalBlip.z)
+
 	-- BEEP BEEP MOTHERFUCKAAA
 	if team == "runner" then
 		Citizen.CreateThread(function()
@@ -80,6 +83,10 @@ AddEventHandler('cl_gameFinish', function(status)
 		local vehicle = GetVehiclePedIsIn(ped, false)
                 res = exports["vehicle-manager"]:DeleteVehicle(vehicle, false)
 	end
+
+	SetBlipRoute(blipId, false)
+	SetBlipAlpha(blipId, 0)
+	blipId = 0
 
 	Citizen.Wait(250)
 		

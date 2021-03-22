@@ -21,8 +21,6 @@ for k in pairs(courses) do
 	table.insert(internalMaps, k)
 	table.insert(mapsComboBoxItems, courses[k].pretty_name)
 end
-print(json.encode(internalMaps))
-print(json.encode(mapsComboBoxItems))
 
 local attackVehicleComboBoxIndex = 1
 local defendVehicleComboBoxIndex = 1
@@ -182,4 +180,5 @@ AddEventHandler('huntingpack:showMenu', function()
 
 		Citizen.Wait(0)
 	end
+	WarMenu.CloseMenu()
 end)

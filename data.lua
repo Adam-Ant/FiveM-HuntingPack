@@ -17,16 +17,17 @@ courses  = {
 			defense = vector4(791.5,-914,24.8,182),
 			runner = vector4(773,-964,25.5,182),
 		},
-		goal = vector4(-413, -2464 ,5.5 ,6)
+		goal = vector4(-413, -2464 ,8 ,12),
+		goalBlip = vector4(-348, -2529.8, 6, 8)
 	},
 	storm_drain = {
 		pretty_name = "Up the Storm Drain",
 		spawns = {
-			defense = vector4(665.5, 1479, 10, 14.5),
+			defense = vector4(665.5, -1479, 10, 14.5),
 			attack = vector4(640.5, -1813.0, 10, 355),
 			runner = vector4(600, -1407, 10, 15.5),
 		},
-		goal = vector4(1097, -209, 55, 4)
+		goal = vector4(1097, -209, 58, 4)
 	},
 	beachy_boi = {
 		pretty_name = "Beachy Boi",
@@ -46,6 +47,16 @@ courses  = {
 		},
 		goal = vector4(-1796.17, -1180.36, 13.4, 4)
 	},
+	-- Playtested, works
+	building_to_humane = {
+		pretty_name = "Dirt Track to Humane Labs",
+		spawns = {
+			defense = vector4(922.5, 2199.4, 49, 56.5),
+			attack = vector4(1053.8, 2043.7, 53, 32),
+			runner = vector4(899.5, 2217.8, 49, 63.8),
+		},
+		goal = vector4(3385.5, 3719.72, 37, 6)
+	},
 }
 
 
@@ -60,7 +71,7 @@ adVehicles = {
 	['Voltic'] = { model = 'voltic' },
 	['Rocket Voltic'] = { model = 'voltic2' },
 	['Brutus'] = { model = 'brutus2' },
-	['Bruiser'] = { model = 'bruiser'},
+	['Dominator'] = { model = 'dominator5'},
 	['Voodoo'] = { model = 'voodoo2' },
 	['Kalhari'] = { model = 'kalahari' },
 	['Osiris'] = { model = 'osiris' },
@@ -70,12 +81,12 @@ adVehicles = {
 runnerVehicles = { 
 	['Glendale'] = {
 		model = 'glendale',
-		time = 10,
+		time = 5,
 		speed = 35,
 	},
 	['Ripley'] = {
 		model = 'ripley',
-		time = 10,
+		time = 5,
 		speed = 25,
 	},
 	['Dump Truck'] = {
@@ -85,27 +96,28 @@ runnerVehicles = {
 	},
 	['Dune Truck'] = {
 		model = 'rallytruck',
-		time = 10,
+		time = 5,
 		speed = 45,
 	},
 	['Bus'] = {
 		model = 'bus',
-		time = 10,
+		time = 5,
 		speed = 25,
 	},
 	['Cerberus'] = {
 		model = 'cerberus',
-		time = 10,
+		time = 5,
 		speed = 30,
+		power = 0.9,
 	},
 	['Stockade'] = {
 		model = 'stockade',
-		time = 10,
+		time = 5,
 		speed = 30,
 	},
 	['RCV'] = {
 		model = 'riot2',
-		time = 10,
+		time = 5,
 		speed = 30,
 	},
 }
@@ -119,8 +131,8 @@ runnerVehicles = {
 --defend: rocket voltix
 --runner: ripley
 --
---attack: brutus2
---defend: bruiser
+--attack: brutus
+--defend: dominator
 --runner: cerberus
 --
 --attack: voodoo

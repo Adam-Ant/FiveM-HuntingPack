@@ -22,9 +22,8 @@ function addMissionBlip(x, y, z)
 	return blipId
 end
 
-function displaySplashText(message)
+function displaySplashText(message, x, y, scale)
 	alpha = 255
-	displayText = true
 	while displayText or alpha > 0 do
 		if not displayText then
 			alpha = alpha - 10
@@ -32,7 +31,7 @@ function displaySplashText(message)
 		end
 		SetTextFont(0)
 		SetTextProportional(0)
-		SetTextScale(2.5,2.5)
+		SetTextScale(scale,scale)
 		SetTextColour(247, 247, 247, alpha)
 		SetTextDropShadow(0, 0, 0, 0,255)
 		SetTextEdge(1, 0, 0, 0, 255)
@@ -40,7 +39,7 @@ function displaySplashText(message)
 		SetTextOutline()
 		BeginTextCommandDisplayText('STRING')
 		AddTextComponentString(message)
-		EndTextCommandDisplayText(0.35,0.3)
+		EndTextCommandDisplayText(x, y)
 		Citizen.Wait(0)
 	end
 end

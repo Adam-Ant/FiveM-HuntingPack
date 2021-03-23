@@ -91,7 +91,7 @@ AddEventHandler('cl_gameFinish', function(status)
 	blipId = 0
 
 	Citizen.Wait(250)
-		
+
 	if IsPedDeadOrDying(ped) then
 	    	exports.spawnmanager:forceRespawn()
 	end
@@ -120,7 +120,8 @@ AddEventHandler('cl_gameFinish', function(status)
 		Citizen.SetTimeout(5000, function()
 			displayText = false
 		end)
-		displaySplashText(finishMessage)
+    displayText = true
+		displaySplashText(finishMessage, 0.35, 0.3, 2.5)
 	end)
 
 	DoScreenFadeIn(500)

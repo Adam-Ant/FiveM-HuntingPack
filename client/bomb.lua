@@ -4,17 +4,41 @@ bombMessages = {
   ['destroyed']        = '~r~Destroyed.',
 }
 
+
+
 function bombActive(speedLimit, allowedSeconds)
   isArmed = false
   limit = speedLimit
+  speed = 0
   secondsBelow = 0
+
   vehicle = GetVehiclePedIsUsing(PlayerPedId())
 
   showNotification(bombMessages['installed'], speedLimit, 'mph', allowedSeconds)
 
-  Citzen.CreateThread(function()
+  Citizen.CreateThread(function()
     while isActive do
-      displayTimer()
+      if isArmed then
+        if speed < limit then
+          colour = "~r~"
+        else
+          colour = "~g~"
+        end
+      else
+        colour = "~y~"
+      end
+      timeRemaining = colour .. tostring(allowedSeconds - secondsBelow)
+      SetTextFont(0)
+      SetTextProportional(0)
+      SetTextScale(1.0, 1.0)
+      SetTextColour(247, 247, 247, 255)
+      SetTextDropShadow(0, 0, 0, 0,255)
+      SetTextEdge(1, 0, 0, 0, 255)
+      SetTextDropShadow()
+      SetTextOutline()
+      BeginTextCommandDisplayText('STRING')
+      AddTextComponentString(timeRemaining)
+      EndTextCommandDisplayText(0.5, 0.03)
       Citizen.Wait(0)
     end
   end)
@@ -67,21 +91,6 @@ function bombActive(speedLimit, allowedSeconds)
     end
   end
 end
-
-function displayTimer()
-  if isArmed then
-    if speed < limit then
-      colour = "~r~"
-    else
-      colour = "~g~"
-    end
-  else
-    colour = "~y~"
-  end
-
-  displaySplashText(tostring(allowedSeconds - secondsBelow), 0.5, 0.2, 1)
-end
-
 
 function doExplosion(vehicle)
   local coords = GetEntityCoords(vehicle)

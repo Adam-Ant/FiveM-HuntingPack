@@ -86,7 +86,7 @@ function bombActive(speedLimit, allowedSeconds)
       doExplosion(vehicle)
       NetworkExplodeVehicle(vehicle, true, false, 0)
       Citizen.Wait(2000)
-      TriggerServerEvent("gameFinish", "lose")
+      TriggerServerEvent("huntingpack:svGameFinish", "lose")
       break
     end
   end

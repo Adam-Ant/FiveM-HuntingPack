@@ -4,82 +4,85 @@ finishMessages = {
 	['cancel'] = ""
 }
 
-team = "attack"
+team = ""
 isActive = false
 blipId = 0
-attackVehicle = "adder"
-defendVehicle = "adder"
-runnerVehicle = "bus"
-selectedMap = "airport_dev"
 
 displayText = false
 
-AddEventHandler('onClientGameTypeStart', function()
-    exports.spawnmanager:setAutoSpawnCallback(function()
-        exports.spawnmanager:spawnPlayer({
-            x = spawnPoint.x,
-            y = spawnPoint.y,
-            z = spawnPoint.z
-	})
-    end)
-
-    exports.spawnmanager:setAutoSpawn(true)
-	exports.spawnmanager:forceRespawn()
-end)
-
-RegisterNetEvent('cl_gameStart')
-AddEventHandler('cl_gameStart',function(srvAttackVehicle, srvDefendVehicle, srvRunnerVehicle, course, bombSpeed, bombTime, powerMultiplier )
-	courseData = courses[course]
-	if team == "defense" then
-		vehicleModel = srvDefendVehicle
-	elseif team == "attack" then
-		vehicleModel = srvAttackVehicle
-	elseif team == "runner" then
-		vehicleModel = srvRunnerVehicle
-	end
-
-    local coords = courseData.spawns[team]
-
+RegisterNetEvent('huntingpack:clStartSpawn')
+AddEventHandler('huntingpack:clStartSpawn',function(map, srvTeam, playerVehicle)
 	DoScreenFadeOut(250)
+	Citizen.Wait(260)
 
-	SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 2, false, false, false, false)
+	local mapData = courses[map]
+    local spawnCoords = mapData.spawns[team]
+	team = srvTeam
 
-    vehicle = spawnVehicle(vehicleModel, coords.x, coords.y, coords.z, coords.w)
-    SetPedIntoVehicle(GetPlayerPed(-1), vehicle.VehicleId, -1)
+	lobbyActive = false
 	isActive = true
 
-	Citizen.CreateThread(function()
-		drawMarker(courseData.goal)
-	end)
+	if team == "runner" then
+		vehicleModel = runnerVehicles[playerVehicle].model
+	else
+		vehicleModel = adVehicles[playerVehicle].model
+	end
+
+	SetEntityCoords(PlayerPedId(), spawnCoords.x, spawnCoords.y, spawnCoords.z + 2, false, false, false, false)
+
+    vehicle = spawnVehicle(vehicleModel, spawnCoords.x, spawnCoords.y, spawnCoords.z, spawnCoords.w)
+    SetPedIntoVehicle(GetPlayerPed(-1), vehicle.VehicleId, -1)
 
 	-- Create blip
-	if courseData.goalBlip == nil then
-		courseData.goalBlip = courseData.goal
+	if mapData.goalBlip == nil then
+		mapData.goalBlip = mapData.goal
 	end
 
-	blipId = addMissionBlip(courseData.goalBlip.x, courseData.goalBlip.y, courseData.goalBlip.z)
+	blipId = addMissionBlip(mapData.goalBlip.x, mapData.goalBlip.y, mapData.goalBlip.z)
 
-	-- BEEP BEEP MOTHERFUCKAAA
+	-- Create end marker, make it live if runner
+	Citizen.CreateThread(function()
+		drawMarker(mapData.goal)
+	end)
+
 	if team == "runner" then
+		local powerMultiplier = 1
+		if runnerVehicles[playerVehicle].power then
+			powerMultiplier = runnerVehicles[playerVehicle].power
+		end
+
 		ModifyVehicleTopSpeed(vehicle.VehicleId, powerMultiplier)
-		Citizen.CreateThread(function()
-			bombActive(bombSpeed, bombTime)
-		end)
+ 		Citizen.CreateThread(function()
+ 			bombActive(runnerVehicles[playerVehicle].speed, runnerVehicles[playerVehicle].time)
+ 		end)
 
 		Citizen.CreateThread(function()
-			checkGoal(courseData.goal)
+			checkGoal(mapData.goal)
 		end)
 	end
-
-	DoScreenFadeIn(500)
+	TriggerServerEvent('huntingpack:svReportReadyToStart')
 end)
 
-RegisterNetEvent('cl_gameFinish')
-AddEventHandler('cl_gameFinish', function(status)
+RegisterNetEvent('huntingpack:clGameStart')
+AddEventHandler('huntingpack:clGameStart',function()
+	DoScreenFadeIn(250)
+	-- TODO: Race countdown - final piece of issue 3
+end)
+
+RegisterNetEvent('huntingpack:clGameFinish')
+AddEventHandler('huntingpack:clGameFinish', function(status)
 	DoScreenFadeOut(100)
+	Citizen.Wait(110)
 	ped = GetPlayerPed(-1)
 
+	-- Only teleport if the game started
+	if isActive then
+			-- TODO: Should this just respawn randomly instead?
+		SetEntityCoords(PlayerPedId(), spawnPoint.x, spawnPoint.y, spawnPoint.z + 1, false, false, false, false)
+	end
+
 	isActive = false
+	lobbyActive = false
 
 	if IsPedInAnyVehicle(ped, false) then
 		local vehicle = GetVehiclePedIsIn(ped, false)
@@ -96,8 +99,6 @@ AddEventHandler('cl_gameFinish', function(status)
 	    	exports.spawnmanager:forceRespawn()
 	end
 
-	SetEntityCoords(PlayerPedId(), spawnPoint.x, spawnPoint.y, spawnPoint.z + 1, false, false, false, false)
-
 	if team == "attack" then
 		if status == 'lose' then
 			status = 'win'
@@ -109,10 +110,10 @@ AddEventHandler('cl_gameFinish', function(status)
 	finishMessage = finishMessages[status]
 
 	if status == 'win' then
-		-- Play Sound
+		-- TODO: Play Sound
 		print('Winner')
 	elseif status == 'win' then
-		-- play sound
+		-- TODO: Play sound
 		print('loser')
 	end
 
@@ -135,6 +136,7 @@ function drawMarker(marker)
 	end
 end
 
+-- TODO: Move this into utils and generic?
 function checkGoal(marker)
 	local hasTouched = false
 	markerPos = vector3(marker.x, marker.y, marker.z - 3)
@@ -143,7 +145,7 @@ function checkGoal(marker)
 		if Vdist2(playerCoord, markerPos) < (marker.w * 1.5) then
 			if not hasTouched then
 				hasTouched = true
-				TriggerServerEvent("gameFinish", "win")
+				TriggerServerEvent("huntingpack:svGameFinish", "win")
 			end
 		end
 		Citizen.Wait(0)

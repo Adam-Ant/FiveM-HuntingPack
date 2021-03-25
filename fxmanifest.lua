@@ -4,10 +4,7 @@ games {'gta5'}
 
 author 'Adam-Ant'
 description 'Hutning Pack reimplemented in FiveM for more freedom'
-version '1.0.0'
-
-
-resource_type 'gametype' { name = 'FiveM Hunting Pack' }
+version '1.1.0'
 
 client_scripts {
   '@warmenu/warmenu.lua',

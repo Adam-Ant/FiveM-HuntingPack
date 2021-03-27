@@ -65,8 +65,20 @@ end)
 
 RegisterNetEvent('huntingpack:clGameStart')
 AddEventHandler('huntingpack:clGameStart',function()
+	countdownActive = true
+	Citizen.CreateThread(function()
+		while countdownActive do
+			 -- Disable acceleration/reverse every frame until race starts
+			 DisableControlAction(2, 71, true)
+			 DisableControlAction(2, 72, true)
+			 Citizen.Wait(0)
+		end
+	end)
 	DoScreenFadeIn(250)
-	-- TODO: Race countdown - final piece of issue 3
+	-- pause for effect..
+	Citizen.Wait(1000)
+	doRaceCountdown()
+	countdownActive = false
 end)
 
 RegisterNetEvent('huntingpack:clGameFinish')

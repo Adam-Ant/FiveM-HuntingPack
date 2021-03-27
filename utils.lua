@@ -22,11 +22,28 @@ function addMissionBlip(x, y, z)
 	return blipId
 end
 
+function doRaceCountdown()
+	PlaySoundFrontend(-1, "3_2_1","HUD_MINI_GAME_SOUNDSET", 1)
+    Citizen.CreateThread(function () displaySplashText("~r~3", 0.482, 0.15, 4.0) end)
+    Citizen.Wait(1000)
+    PlaySoundFrontend(-1, "3_2_1","HUD_MINI_GAME_SOUNDSET", 1)
+    Citizen.CreateThread(function () displaySplashText("~r~2", 0.482, 0.15, 4.0) end)
+    Citizen.Wait(1000)
+    PlaySoundFrontend(-1, "3_2_1","HUD_MINI_GAME_SOUNDSET", 1)
+    Citizen.CreateThread(function () displaySplashText("~r~1", 0.4925, 0.15, 4.0) end)
+    Citizen.Wait(700)
+    PlaySoundFrontend(-1, "Start","DLC_AW_Frontend_Sounds", 1)
+    Citizen.Wait(300)
+    displayText = true
+    Citizen.CreateThread(function () displaySplashText("~g~GO", 0.4373, 0.15, 4.0) end)
+    Citizen.SetTimeout(500, function() displayText = false end)
+end
+
 function displaySplashText(message, x, y, scale)
 	alpha = 255
 	while displayText or alpha > 0 do
 		if not displayText then
-			alpha = alpha - 10
+			alpha = alpha - 5
 			if alpha < 0 then alpha = 0 end
 		end
 		SetTextFont(0)

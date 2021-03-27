@@ -27,7 +27,9 @@ function bombActive(speedLimit, allowedSeconds)
       else
         colour = "~y~"
       end
-      timeRemaining = colour .. tostring(allowedSeconds - secondsBelow)
+      floatRemaining = allowedSeconds - secondsBelow
+      if floatRemaining < 0 then floatRemaining = 0 end
+      timeRemaining = string.format("%s%.1f", colour, floatRemaining)
       SetTextFont(0)
       SetTextProportional(0)
       SetTextScale(1.0, 1.0)
@@ -50,14 +52,30 @@ function bombActive(speedLimit, allowedSeconds)
 
 
     if speed >= limit then
+      if secondsBelow < allowedSeconds - 1 then
+        playedFinalWarning = false
+      end
       if isArmed then
+        playedBombBelow = false
+
+        if not playedBombAbove then
+          playedBombAbove = true
+          PlaySoundFrontend(-1, 'Bomb_Disarmed', 'GTAO_Speed_Convoy_Soundset', 1)
+        end
+        
         if secondsBelow > 0 then
           secondsBelow = secondsBelow - 0.1
         end
+
+        if secondsBelow < 0 then
+          secondsBelow = 0
+        end
       else
         isArmed = true
+        playedBombAbove = true
+        playedBombBelow = false
         showNotification(bombMessages['armed'])
-        PlaySoundFrontend(-1, 'CONFIRM_BEEP', 'HUD_MINI_GAME_SOUNDSET', 1)
+        PlaySoundFrontend(-1, 'Bomb_Armed', 'GTAO_Speed_Convoy_Soundset', 1)
         Citizen.CreateThread(function ()
           while isArmed and isActive do
             if secondsBelow > 0 and secondsBelow < allowedSeconds and speed < limit then
@@ -70,19 +88,28 @@ function bombActive(speedLimit, allowedSeconds)
     end
 
     if isArmed and speed < limit then
+      playedBombAbove = false
+      if not playedBombBelow then
+        playedBombBelow = true
+        PlaySoundFrontend(-1, 'Bomb_Armed', 'GTAO_Speed_Convoy_Soundset', 1)
+      end
       secondsBelow = secondsBelow + 0.1
     end
 
-    if secondsBelow == allowedSeconds then
-      PlaySoundFrontend(-1, 'BEEP_GREEN', 'DLC_HEIST_HACKING_SNAKE_SOUNDS', 0)
+    if secondsBelow > allowedSeconds - 1 then
+      if not playedFinalWarning then
+        playedFinalWarning = true
+        PlaySoundFrontend(-1, 'Fail', 'dlc_xm_silo_laser_hack_sounds', 1)
+      end
     end
 
-
-    if secondsBelow >= allowedSeconds + 1.5 then
+    if secondsBelow >= allowedSeconds + 0.25 then
       isActive = false
       isArmed = false
       secondsBelow = 0
       showNotification(bombMessages['destroyed'])
+      doExplosion(vehicle)
+      doExplosion(vehicle)
       doExplosion(vehicle)
       NetworkExplodeVehicle(vehicle, true, false, 0)
       Citizen.Wait(2000)

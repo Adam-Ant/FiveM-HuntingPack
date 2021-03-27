@@ -21,7 +21,7 @@ for i in pairs(adVehicles) do
 end
 table.sort(adVehicleComboBoxItems)
 
-local runnerVehicleComboBoxIndex = 1
+local runnerVehicleComboBoxItems = {}
 for i in pairs(runnerVehicles) do
 	table.insert(runnerVehicleComboBoxItems, i)
 end

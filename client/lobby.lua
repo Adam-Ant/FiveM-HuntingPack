@@ -34,7 +34,9 @@ local _altSprite = false
 lobbyActive = false
 
 RegisterCommand('hp', function()
-    TriggerServerEvent('huntingpack:svStartLobby')
+    if not lobbyActive and not isActive then
+        TriggerServerEvent('huntingpack:svStartLobby')
+    end
 end)
 
 RegisterNetEvent('huntingpack:clStartLobby')

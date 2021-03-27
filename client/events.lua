@@ -4,7 +4,7 @@ finishMessages = {
 	['cancel'] = ""
 }
 
-team = ""
+team = "attack"
 isActive = false
 blipId = 0
 

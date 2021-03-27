@@ -31,6 +31,7 @@ AddEventHandler('huntingpack:clStartSpawn',function(map, srvTeam, playerVehicle)
 	SetEntityCoords(PlayerPedId(), spawnCoords.x, spawnCoords.y, spawnCoords.z + 2, false, false, false, false)
 
     vehicle = spawnVehicle(vehicleModel, spawnCoords.x, spawnCoords.y, spawnCoords.z, spawnCoords.w)
+	SetVehicleColours(vehicle.VehicleId, vehicleColours[team], vehicleColours[team])
     SetPedIntoVehicle(GetPlayerPed(-1), vehicle.VehicleId, -1)
 
 	-- Create blip

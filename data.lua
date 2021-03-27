@@ -130,6 +130,12 @@ runnerVehicles = {
 	},
 }
 
+-- Vehicle Colours from pastebin.com/pwHci0xK
+vehicleColours = {
+	["attack"] =  12,
+	["defend"] =  121,
+	["runner"] = 29,
+}
 --Presets
 --attack: Dune
 --defend: Trashmaster
